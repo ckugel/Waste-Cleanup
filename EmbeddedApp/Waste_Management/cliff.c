@@ -5,28 +5,37 @@
  *      Author: ckugel05
  */
 
-bool hole_Fleft() {
 
+#include "cliff.h"
+
+bool hole_Fleft(oi_t* sensor_data) {
+    return (sensor_data->cliffFrontLeftSignal HOLE_THRESHOLD);
 }
 
-bool hole_Fright() {
-
+bool hole_Fright(oi_t* sensor_data) {
+    return (sensor_data->cliffFrontRightSignal HOLE_THRESHOLD);
 }
 
-bool hole_left() {
-
+bool hole_left(oi_t* sensor_data) {
+    return (sensor_data->cliffLeftSignal HOLE_THRESHOLD);
 }
 
-bool hole_right() {
-
+bool hole_right(oi_t* sensor_data) {
+    return (sensor_data->cliffRightSignal HOLE_THRESHOLD);
 }
 
-bool target_left() {
-
+bool edge_of_field_FLeft(oi_t* sensor_data) {
+    return (sensor_data->cliffFrontLeftSignal EDGE_THRESHOLD);
 }
 
-bool target_right() {
-
+bool edge_of_field_Left(oi_t* sensor_data) {
+    return (sensor_data->cliffLeftSignal EDGE_THRESHOLD);
 }
 
+bool edge_of_field_FRight(oi_t* sensor_data) {
+    return (sensor_data->cliffFrontRightSignal EDGE_THRESHOLD);
+}
 
+bool edge_of_field_Right(oi_t* sensor_data) {
+    return (sensor_data->cliffRightSignal EDGE_THRESHOLD);
+}
