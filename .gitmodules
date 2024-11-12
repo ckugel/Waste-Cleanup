@@ -1,3 +1,3 @@
 [submodule "GUI-App/RoombaController"]
 	path = GUI-App/RoombaController
-	url = git@github.com:ckugel/RoombaController.git
+	url = https://github.com/ckugel/RoombaController.git
