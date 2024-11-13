@@ -50,12 +50,11 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-<<<<<<< HEAD
+
 /.metadata/
-=======
 
 EmbeddedApp/.metadata/
 
 EmbeddedApp/.jxbrowser.userdata/
+EmbeddedApp/.ccls-cache/
 
->>>>>>> 8e51140aa4d5c7c81fa7f6a466c6ca0afe08a255
