@@ -10,26 +10,53 @@
 
 #include "open_interface.h"
 
-#define HOLE_THRESHOLD < 1000
-#define EDGE_THRESHOLD > 2000
+#define HOLE_THRESHOLD_MAX 1000
+#define EDGE_THRESHOLD_MIN 2000
 
-// assume sensor data has been updated for all of these
-bool hole_Fleft(oi_t* sensor_data);
+/**
+ * Predcate that returns whether a clff sensor's signal is reading a hole
+ * @param value a cliff sensor's signal
+ * @return whether the sensor value means we are reading a hole
+ */ 
+bool readingHole(uint16_t value);
 
-bool hole_Fright(oi_t* sensor_data);
+/**
+ * Predicate that returns whether a cliff sensor's signal is reading an edge
+ * @param value the value read by the cliff sensor's signal
+ * @return whether the sensor calue means we are reading an edge
+ */ 
+bool readingEdge(uint16_t value);
 
-bool hole_left(oi_t* sensor_data);
+/**
+ * Determines which cliff sensor is reading a hole.
+ * Assumes that the sensor has been updated already.
+ * @param sensor OI_T sensor from cyBot
+ * @return which sensor is reading the hole. Methodology -> {
+ * 	0 for none
+ *	left has a value of 1
+ *	front left has a value of 2
+ *	front right has a value of 4
+ *	right has a value of 8
+ *	These values get combined into a single value with addition.
+ *	For instance if front left and left both see a hole we return 1 + 2 = 3
+ * }
+ */ 
+uint8_t getHoleTouching(oi_t* sensor);
 
-bool hole_right(oi_t* sensor_data);
-
-bool target_left(oi_t* sensor_data);
-
-bool target_right(oi_t* sensor_data);
-
-bool edge_of_field_FLeft(oi_t* sensor_data);
-bool edge_of_field_Left(oi_t* sensor_data);
-bool edge_of_field_FRight(oi_t* sensor_data);
-bool edge_of_field_Right(oi_t* sensor_data);
-
+/**
+ * Determines which cliff sensor is reading an edge
+ * Assumes that the sensor has been updated already
+ * @param sensor OI_T sensor from cyBot
+ * @return which sensor is reading the edge.Methodology -> {
+ * 	0 for none
+ *	left has a value of 1
+ *	front left has a value of 2
+ *	front right has a value of 4
+ *	right has a value of 8
+ *	These values get combined into a single value with addition.
+ *	For instance if front left and left both see a hole we return 1 + 2 = 3
+ * } 
+ */ 
+uint8_t getEdgeTouching(oi_t* sensor);
 
 #endif /* CLIFF_H_ */
