@@ -5,9 +5,9 @@
 * 	Author ckugel05
 */
 
-#include "caleb_array.h"
+#include "circular_array.h"
 
-CArray create(char capacity) {
+CArray create_circular_array(uint8_t capacity) {
   T* array = (T*) malloc(sizeof(T) * capacity);
   CArray b;
   b.arr = array;
@@ -25,18 +25,7 @@ T get(CArray* self, long index) {
   return self->arr[(index) % self->capacity];
 }
 
-/*
-double getAverage(CArray* self) {
-  float sum = 0;
-  int i;
-  for (i = 0; i < self->capacity; i++) {
-    sum += self->arr[i].distance;
-  }
-  return (double) (sum) / (double) (self->capacity);
-}
-*/
-
-void deconstruct(CArray* self) {
+void deconstruct_circular_array(CArray* self) {
   free(self->arr);
 }
 

@@ -11,7 +11,7 @@
 
 MedianFilter create_filter(uint8_t size) {
   MedianFilter f;
-  f.data = create(size);
+  f.data = create_circular_array(size);
   f.size = size;
   T* arr = calloc(sizeof(T), size);
   f.sorted_array = arr;
@@ -92,7 +92,7 @@ T getMedian(MedianFilter* self) {
 }
 
 void deconstruct_filter(MedianFilter* self) {
-    deconstruct(&(self->data));
+    deconstruct_circular_array(&(self->data));
     free(self->sorted_array);
     // free(self->sorted_array);
 }
