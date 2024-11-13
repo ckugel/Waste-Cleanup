@@ -42,29 +42,45 @@ typedef struct {
     float radius; // meters
 } Pillar;
 
-// assumes the bot is @ 0 0 and facing 0 degrees
+// assumes the bot is @ 0 0 and facing 0 degrees.
 typedef struct {
     uint8_t size;
     Pillar* pillars;
 } Field;
 
-// nodes are points on the graph that the robot can safely travel to. These should be generated via a discretization function
-typedef struct {
-  // some sort of random access memory for the nodes
-  Pose2D* nodes;
-  // we need an adjacency matrix
-  float* weights; // going to be formatted very goofy. weights should be square of distances
-  // the amount of nodes as well as the square root of the number of weights ^ like I said it was goofy 
-  uint8_t size;
-} Graph;
-
+/**
+ * Creates a new field object from a list of pillars and it's size
+ * Does dynamic memory allocation and also allocates enough space for 5 more pillars
+ * @param pillar a list of Pillar objects
+ * @param size the size of the Pillar objects array
+ * @return a struct of type Field that contains the pillars on the field
+ */ 
 Field create_field(Pillar* pillar, uint8_t size);
+
+/**
+ * Used to deconstruct a created field
+ */
 void deconstruct_field(Field* field);
+
+/**
+ * Adds a bumped pillar to the field
+ */ 
 void add_bump_to_field(Field* field, Pillar p);
 
+/**
+ * Matrix transforms an entire field by a passed in (x, y, theta) in the form of a pose2d
+ * Modifies the field
+ */ 
 void transformFieldBy(Field* field, Pose2D pose);
 
+/**
+ * Constructor for a Pose2D based off of passed in coords struct and heading
+ */ 
 Pose2D create_pose_from_coordinates(Coordinate coords, float heading);
+
+/**
+ * Constructor for a Pose2D based off of x, y, heading
+ */ 
 Pose2D create_pose_from_xy(float x, float y, float heading);
 
 /**
@@ -79,26 +95,60 @@ void rotatePoseByPose(Pose2D* pose, Pose2D rotation);
  */
 void rotatePoseByAngle(Pose2D* pose, float angle);
 
+/**
+ * Math conversion
+ * @param angle the angle in degrees
+ * @return the angle in radians
+ */ 
 float degrees_to_radians(float degrees);
+
+/**
+ * Math angle conversion
+ * @param radians the angle in radians
+ * @return the angle in degrees
+ */ 
 float radians_to_degrees(float radians);
 
+/**
+ * @return the angle between two cartesian points
+ */ 
 float angleBetweenTwoPoints(Coordinate one, Coordinate two);
+
+/**
+ * @return the distance between two cartesian points
+ */ 
 float distanceBetweenTwoPoints(Coordinate one, Coordinate two);
 
 /**
+ * Translates a given position by each component of the translation.
+ * For instance does base.x + translation.x
  * @param base the coordinates
  * @param translation the x and y values to alter the base by
- * @return a copy of the base struct that has been translated.
- * //TODO: decide if this should instead mutate base. Ownership style
  */
 void translatePoseByCoordinate(Pose2D* base, Coordinate translation);
-Pose2D addTranslation(Pose2D* base, double modifier);
 
+/**
+ * Translates a position by a given magnitude in the direction of the current heading on the base position
+ * @param base the position which gets translated and modified
+ * @param magnitude the amount to translate the position by
+ */ 
 void translatePoseByMagnitude(Pose2D* base, float magnitude);
 
+/**
+ * Creates a copy of a Pose2D and returns it
+ * @param pose the position to clone
+ * @return the cloned pose passed in
+ */ 
 Pose2D copy_of_pose(Pose2D pose);
 
+/**
+ * @return the angle from 0, 0 to a given pillar
+ */ 
 float getAngleFromPillar(Pillar p);
+
+/**
+ * @return the distance to a given pillar from 0, 0
+ */ 
 float getDistanceToPillar(Pillar p);
 
 /**
@@ -107,10 +157,23 @@ float getDistanceToPillar(Pillar p);
  */
 void transformPose(Pose2D* base, Pose2D modifier);
 
+/**
+ * Takes in a given object and returns it as a pillar
+ */ 
 Pillar getPillarFromObject(Obj object);
 
+/**
+ * sends the desired node index in fields through putty.
+ * NOTE: this will likely be changing to a position on the field 
+ */ 
 void send_desired_through_putty(uint8_t indexSmallest);
 
+/**
+ * returns the smallest object from a list of objects
+ * @param objects the list of objects to search through
+ * @param size the size of the object
+ * @return the object which is the smallest
+ */ 
 Obj getSmallestObject(Obj* objects, uint8_t size);
 
 Pillar* getPillarsFromObject(Obj* objects, uint8_t size);
@@ -134,27 +197,11 @@ void send_objects_raw(Obj* object, uint8_t size);
 float getAngleFromPose(Pose2D p);
 float getDistanceToPose(Pose2D p);
 
-float inverse_length_raw(float x1, float y1, float x2, float y2);
-
-bool line_intersects_circle(float x1, float y1, float x2, float y2, float cx, float cy, float radius);
-
 /**
- * Calculates whether a line between start and end intersects with a pillar
- * Inspired by: https://stackoverflow.com/questions/1073336/circle-line-segment-collision-detection-algorithm
- */
-bool intersects_pillar(Coordinate start, Coordinate end, Pillar* pillar);
-
-
-/** uses the quake fast inverse square root algorithm to calculate the square root of value
- * https://betterexplained.com/articles/understanding-quakes-fast-inverse-square-root/
- *
- * Research Paper: https://www.lomont.org/papers/2003/InvSqrt.pdf
- * Yes I read this for this lab ^
- */
-float fast_inverse_square_root(float value);
-
-float inverse_length(Coordinate one, Coordinate two);
-
+* Takes a list of objects, removes objects that are too small.
+* Modifies the respective size of the list and returns.
+* @param STEP cooresponds to the step at which the measurements were taken
+*/ 
 void cleanse_small_width_objects(Obj* objects, uint8_t* size, uint8_t STEP);
 
 Pose2D addTranslation(Pose2D* base, double modifier);
