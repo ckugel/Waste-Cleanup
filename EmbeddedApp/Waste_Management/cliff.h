@@ -10,11 +10,15 @@
 
 #include "open_interface.h"
 
-#define HOLE_THRESHOLD_MAX 1000
-#define EDGE_THRESHOLD_MIN 2000
+#define HOLE_THRESHOLD_MAX 100 //reads 0 on black
+#define EDGE_THRESHOLD_MIN 2500 // edge value reads between 2500 and 2700
+#define EDGE_THRESHOLD_MAX 2700 // edge value reads between 2500 and 2700
+#define TARGET_THRESHOLD_MIN 2800 // reading on glossy green folder 2800
+#define FLOOR_THRESHOLD_MIN 1000 // reading on floor tile between 1000 and 1700
+#define FLOOR_THRESHOLD_MAX 1700 // reading on floor tile between 1000 and 1700
 
 /**
- * Predcate that returns whether a clff sensor's signal is reading a hole
+ * Predcate that returns whether a cliff sensor's signal is reading a hole
  * @param value a cliff sensor's signal
  * @return whether the sensor value means we are reading a hole
  */ 
@@ -26,6 +30,8 @@ bool readingHole(uint16_t value);
  * @return whether the sensor calue means we are reading an edge
  */ 
 bool readingEdge(uint16_t value);
+
+bool readingTarget(uint16_t value);
 
 /**
  * Determines which cliff sensor is reading a hole.
@@ -58,5 +64,7 @@ uint8_t getHoleTouching(oi_t* sensor);
  * } 
  */ 
 uint8_t getEdgeTouching(oi_t* sensor);
+
+uint8_t getTargetTouching(oi_t* sensor);
 
 #endif /* CLIFF_H_ */

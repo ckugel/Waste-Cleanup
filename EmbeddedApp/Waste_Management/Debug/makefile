@@ -13,7 +13,9 @@ ORDERED_OBJS += \
 "./Graph.obj" \
 "./LinearInterp.obj" \
 "./Timer.obj" \
-"./caleb_array.obj" \
+"./adc.obj" \
+"./button.obj" \
+"./circular_array.obj" \
 "./cliff.obj" \
 "./filter.obj" \
 "./lcd.obj" \
@@ -21,6 +23,7 @@ ORDERED_OBJS += \
 "./movement.obj" \
 "./navigate.obj" \
 "./open_interface.obj" \
+"./ping.obj" \
 "./tm4c123gh6pm_startup_ccs.obj" \
 "./uart.obj" \
 "../tm4c123gh6pm.cmd" \
@@ -154,8 +157,8 @@ Waste_Management.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)
-	-$(RM) "Graph.obj" "LinearInterp.obj" "Timer.obj" "caleb_array.obj" "cliff.obj" "filter.obj" "lcd.obj" "main.obj" "movement.obj" "navigate.obj" "open_interface.obj" "tm4c123gh6pm_startup_ccs.obj" "uart.obj" 
-	-$(RM) "Graph.d" "LinearInterp.d" "Timer.d" "caleb_array.d" "cliff.d" "filter.d" "lcd.d" "main.d" "movement.d" "navigate.d" "open_interface.d" "tm4c123gh6pm_startup_ccs.d" "uart.d" 
+	-$(RM) "Graph.obj" "LinearInterp.obj" "Timer.obj" "adc.obj" "button.obj" "circular_array.obj" "cliff.obj" "filter.obj" "lcd.obj" "main.obj" "movement.obj" "navigate.obj" "open_interface.obj" "ping.obj" "tm4c123gh6pm_startup_ccs.obj" "uart.obj" 
+	-$(RM) "Graph.d" "LinearInterp.d" "Timer.d" "adc.d" "button.d" "circular_array.d" "cliff.d" "filter.d" "lcd.d" "main.d" "movement.d" "navigate.d" "open_interface.d" "ping.d" "tm4c123gh6pm_startup_ccs.d" "uart.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
