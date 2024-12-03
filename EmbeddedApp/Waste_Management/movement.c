@@ -77,8 +77,11 @@ void move_backwards(oi_t *sensor, int centimeters, Pose2D* robotPose) {
     while (sum / 10 < centimeters) {
         oi_update(sensor);
         sum += sensor->distance;
+        hole = getHoleTouching(sensor);
+        edge = getEdgeTouchuing(sensor);
+        target = getTargetTouching(sensor);
 
-        if (sensor->bumpRight || sensor->bumpLeft) {
+        if (target || edge || hole || sensor->bumpRight || sensor->bumpLeft) {
             translatePoseByMagnitude(robotPose, (sum / 10));
             // find the pillar position
             Pose2D hitPose = copy_of_pose(*robotPose);

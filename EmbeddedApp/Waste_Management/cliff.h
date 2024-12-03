@@ -12,10 +12,10 @@
 
 #define HOLE_THRESHOLD_MAX 100 //reads 0 on black
 #define EDGE_THRESHOLD_MIN 2500 // edge value reads between 2500 and 2700
-#define EDGE_THRESHOLD_MAX 2700 // edge value reads between 2500 and 2700
-#define TARGET_THRESHOLD_MIN 2800 // reading on glossy green folder 2800
-#define FLOOR_THRESHOLD_MIN 1000 // reading on floor tile between 1000 and 1700
-#define FLOOR_THRESHOLD_MAX 1700 // reading on floor tile between 1000 and 1700
+#define EDGE_THRESHOLD_MAX 2800 // edge value reads between 2500 and 2700
+#define TARGET_THRESHOLD_MIN 2820 // reading on glossy green folder 2800
+#define FLOOR_THRESHOLD_MIN 2000 // reading on floor tile between 1000 and 1700
+#define FLOOR_THRESHOLD_MAX 2450 // reading on floor tile between 1000 and 1700
 
 /**
  * Predcate that returns whether a cliff sensor's signal is reading a hole

@@ -21,16 +21,16 @@ bool readingTarget(uint16_t value) {
 }
 
 uint8_t getHoleTouching(oi_t* sensor) {
-    return readingHole(sensor->cliffLeftSignal) | (readingHole(sensor->cliffFrontLeftSignal) << 1) | (readingHole(sensor->cliffFrontRight) << 2) | (readingHole(sensor->cliffRightSignal) << 3);
+    return readingHole(sensor->cliffLeftSignal) | (readingHole(sensor->cliffFrontLeftSignal) << 1) | (readingHole(sensor->cliffFrontRightSignal) << 2) | (readingHole(sensor->cliffRightSignal) << 3);
 }
 
 uint8_t getEdgeTouching(oi_t* sensor) {
-    return readingEdge(sensor->cliffLeftSignal) | (readingEdge(sensor->cliffFrontLeftSignal) << 1) | (readingEdge(sensor->cliffFrontRight) << 2) | (readingEdge(sensor->cliffRightSignal) << 3);
+    return readingEdge(sensor->cliffLeftSignal) | (readingEdge(sensor->cliffFrontLeftSignal) << 1) | (readingEdge(sensor->cliffFrontRightSignal) << 2) | (readingEdge(sensor->cliffRightSignal) << 3);
 }
 
 
 uint8_t getTargetTouching(oi_t* sensor){
-    return readingTarget(sensor->cliffLeftSignal) | (readingTarget(sensor->cliffFrontLeftSignal) << 1) | (readingTarget(sensor->cliffFrontRight) << 2) | (readingTarget(sensor->cliffRightSignal) << 3);
+    return readingTarget(sensor->cliffLeftSignal) | (readingTarget(sensor->cliffFrontLeftSignal) << 1) | (readingTarget(sensor->cliffFrontRightSignal) << 2) | (readingTarget(sensor->cliffRightSignal) << 3);
 }
 
 
