@@ -52,11 +52,11 @@ int north_found;
 
 void find_east();
 bumpy receive_and_execute(oi_t*);
-void manage_not_complete(oi_t*);
+void manage_not_complete(oi_t*, Coordinate);
 void send_edge(char);
 void find_north();
-void set_cybot_coords();
-void set_cybot_heading();
+void set_cybot_coords(float, float);
+void set_cybot_heading(float);
 Coordinate get_interim_coordinate(Coordinate target_coord, Coordinate bot_pos);
 void send_interim_coordinate(Coordinate);
 void send_bot_pos();
