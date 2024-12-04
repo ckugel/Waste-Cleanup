@@ -10,6 +10,8 @@
 #include "open_interface.h"
 #include "uart.h"
 #include "Graph.h"
+#include "cliff.h"
+#include "scan.h"
 #include <ctype.h>
 
 Coordinate target_coords[16];
@@ -46,13 +48,19 @@ target_coords[14].y = 5;
 target_coords[15].x = 5;
 target_coords[15].y = 5;
 Pose2D cybot_pose;
+int north_found;
 
 void find_east();
+bumpy receive_and_execute(oi_t*);
+void manage_not_complete(oi_t*);
+void send_edge(char);
 void find_north();
 void set_cybot_coords();
 void set_cybot_heading();
 Coordinate get_interim_coordinate(Coordinate target_coord, Coordinate bot_pos);
 void send_interim_coordinate(Coordinate);
 void send_bot_pos();
-void send_hole();
+void send_hole_point(oi_t*);
 void send_field(Field);
+bumpy execute_move(oi_t*, Move, Pose2D*);
+bumpy execute_routine(oi_t*, Routine*, Pose2D*);

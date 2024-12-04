@@ -39,6 +39,8 @@ int main(void)
     int coordinate_count = 0;
     Coordinate interim_coord;
     bumpy bump;
+    Field field;
+    int result;
     /*
 
     In a loop:
@@ -56,22 +58,28 @@ int main(void)
 
     */
     while (1) {
+        send_bot_pos();
+        field = scan();
+        send_field(field);
         interim_coord = get_interim_coordinate(cybot_pose.xy, target_coords[coordinate_count]);
-        coordinate_count++;
         send_interim_coordinate(interim_coord);
         bump = receive_and_execute(sensor);
         if (!bump.complete) {
-            uint8_t hole = getHoleTouching(sensor);
-            uint8_t target = getTargetTouching(sensor);
-            if (target) {
-                
-            } else if (hole) {
-                send_hole_point(sensor);
-                move_backwards(5);
-            } else if (sensor->bumpRight | sensor->bumpLeft) {
-                
-                move_backwards(5);
+            uint8_t edge = getEdgeTouching(sensor);
+            // Check if edge
+            if (edge) {
+                coordinate_count++;
+            } else {
+                result = manage_not_complete(sensor);
+                if (result) {
+                    break;
+                }
             }
+        } else {
+            set_cybot_coords(interim_coord.x, interim_coord.y);
+        }
+        if (abs(cybot_pose.xy.x - target_coords[coordinate_count].x) < 10 && (cybot_pose.xy.y - target_coords[coordinate_count].y) < 10) {
+            coordinate_count++;
         }
     }
     oi_free(sensor);

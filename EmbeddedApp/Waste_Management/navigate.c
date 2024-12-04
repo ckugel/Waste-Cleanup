@@ -4,24 +4,76 @@
 // To be done first
 // Will move the Cybot to the east side of the field
 void find_east(oi_t* sensor) {
-    if (cybot_heading != 0) {
-        return;
-    }
-    int found = 0;
-    char info;
     bumpy bump;
-    while (!found) {
+    Field field;
+    while (1) {
+        field = scan();
+        send_field(field);
         Coordinate interim;
-        interim.x = cybot_coords.x + 50;
-        interim.y = cybot_coords.y;
+        interim.x = cybot_pose.xy.x + 50;
+        interim.y = cybot_pose.xy.y;
         send_interim_coordinate(interim);
         bump = receive_and_execute();
-        
-        //TODO:
-        // If edge is found check IMU direction to see which edge it is
+        if (!bump.complete) {
+            uint8_t edge = getEdgeTouching(sensor);
+            // Check if edge
+            if (edge) {
+                // Check IMU for direction then send the edge
+
+                // If it's North or South need to continue with finding east
+                
+                // If it's east break
+                break;
+            } else {
+                manage_not_complete(sensor);
+            }
+        }
+    }
+    // If east was found
+        set_cybot_coords(5, cybot_pose.xy.y);
+    // EDGE CASE: west was found
+        set_cybot_coords(240, cybot_pose.xy.y);
+}
+
+int manage_not_complete(oi_t* sensor) {
+    uint8_t hole = getHoleTouching(sensor);
+    uint8_t target = getTargetTouching(sensor);
+    // Set coordinates not accurate because don't know where it stops
+    set_cybot_coords(((cybot_pose.xy.x + interim_coord.x) / 2) - 5, ((cybot_pose.xy.y + interim_coord.y) / 2) - 5);
+    if (target) {
+        return 1;
+    } else if (hole) {
+        send_hole_point(sensor);
+        move_backwards(5);
+    } else if (sensor->bumpRight | sensor->bumpLeft) {
+        Field field;
+        field.size = 1;
+        Pillar pillar[1];
+        pillar[0].position = cybot_pose;
+        pillar[0].radius = 7.0;
+        field.pillars= pillar;
+        send_field(field);
+        move_backwards(5);
+    }
+    return 0;
+}
+// To be executed after finding the east side
+// Needs the Cybot to be turned 
+// Will move the Cybot to the north end of the field then send back that the position has been set
+void find_north() {
+    if (cybot_pose.heading != (3.14 / 2)) {
+       return;
+    }
+    int found = 0;
+    while (!found) {
+       Coordinate interim;
+       interim.x = cybot_pose.xy.x;
+       interim.y = cybot_pose.xy.y + 50;
+       send_interim_coordinate(interim);
     }
 }
-bumpy receive_and_execute() {
+
+bumpy receive_and_execute(oi_t* sensor) {
     Routine routine;
     int startRoutine = 0;
     int count = 0;
@@ -31,8 +83,7 @@ bumpy receive_and_execute() {
         routine_str = uart_receive();
         if (routine_str == 'R' && !startRoutine) {
             startRoutine = 1;
-        }
-        if (routine_str == 'R' && startRoutine) {
+        } else if (routine_str == 'R' && startRoutine) {
             break;
         }
         if (startRoutine) {
@@ -65,23 +116,8 @@ void send_edge(char edge_type) {
         sprintf(buffer, " E %0.2f %c ", cybot_pose.xy.y, edge_type);
         uart_sendStr(buffer);
     }
-    
 }
-// To be executed after finding the east side
-// Needs the Cybot to be turned 
-// Will move the Cybot to the north end of the field then send back that the position has been set
-void find_north() {
-    if (cybot_pose.heading != (3.14 / 2)) {
-       return;
-    }
-    int found = 0;
-    while (!found) {
-       Coordinate interim;
-       interim.x = cybot_pose.xy.x;
-       interim.y = cybot_pose.xy.y + 50;
-       send_interim_coordinate(interim);
-    }
-}
+
 // Sets the cybot coordinates
 void set_cybot_coords(float x, float y) {
     cybot_pose.xy.x = x;
@@ -115,11 +151,24 @@ void send_interim_coordinate(Coordinate interim_coord) {
 }
 void send_bot_pos() {
     char buffer[50];
-    sprintf(buffer, " b o %0.2f %0.2f %0.2f %0.2f ", cybot_coords.x, cybot_coords.y, cybot_pose.heading, 0);
+    sprintf(buffer, " b o %0.2f %0.2f %0.2f %0.2f ", cybot_pose.xy.x, cybot_pose.xy.y, cybot_pose.heading, 0);
     uart_sendStr(buffer);
 }
-void send_hole_point() {
-
+void send_hole_point(oi_t* sensor) {
+    uint16_t reading = getHoleTouching(sensor);
+    float head = cybot_pose.heading;
+    if (reading & 0x08) {
+        head += 1.178;
+    } else if (reading & 0x04) {
+        head += 0.393;
+    } else if (reading & 0x02) {
+        head -= 0.393;
+    } else if (reading & 0x01) {
+        head -= 1.178;
+    }
+    char buffer[50];
+    sprintf(buffer, " h %0.3f %0.3f %0.3f ", cybot_pose.xy.x, cybot_pose.xy.y, head);
+    uart_sendStr(buffer);
 }
 void send_field(Field field) {
     send_pillars_through_putty(field.pillars, field.size);
