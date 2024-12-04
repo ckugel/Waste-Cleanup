@@ -18,6 +18,7 @@
 #include "ping.h"
 #include "Graph.h"
 
+
 float dist_data[100];
 int ir_data[100];
 short toggle;
@@ -144,6 +145,7 @@ int main(void)
     timer_init();
     lcd_init();
     uart_init();
+    imu_init(); 
     servo_init();
     adc_init();
     ping_interrupt_init();
@@ -186,6 +188,29 @@ int main(void)
                uart_sendChar(raw_data[j]);
            }
         }
+
+
+// IMU implementation  <---------------------------->
+
+		
+    else if (byte == 'i') {  // 'i' for IMU heading
+        uint16_t heading = imu_getHeading();
+        sprintf(raw_data, "Heading: %d\n\r", heading);
+        for (j = 0; j < strlen(raw_data); j++) {
+            uart_sendChar(raw_data[j]);
+        }
+    }
+    else if (byte == 'c') {  // 'c' for IMU calibration status
+        uint8_t calib = imu_getCalibrationStatus();
+        sprintf(raw_data, "Calibration Status: %d\n\r", calib);
+        for (j = 0; j < strlen(raw_data); j++) {
+            uart_sendChar(raw_data[j]);
+        }
+    }
+
+//<------------------------------------------------->
+
+		
         else if (byte == 'h' && setup == 1 && toggle == 1 && turned == 0) {
             if (objects[smallestIndex].angle > 90) {
                 turn_counter_clockwise(sensor_data, 6);
