@@ -70,7 +70,7 @@ int main(void)
             if (edge) {
                 coordinate_count++;
             } else {
-                result = manage_not_complete(sensor);
+                result = manage_not_complete(sensor, interim_coord);
                 if (result) {
                     break;
                 }

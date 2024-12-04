@@ -13,7 +13,7 @@ void find_east(oi_t* sensor) {
         interim.x = cybot_pose.xy.x + 50;
         interim.y = cybot_pose.xy.y;
         send_interim_coordinate(interim);
-        bump = receive_and_execute();
+        bump = receive_and_execute(sensor);
         if (!bump.complete) {
             uint8_t edge = getEdgeTouching(sensor);
             // Check if edge
@@ -25,7 +25,7 @@ void find_east(oi_t* sensor) {
                 // If it's east break
                 break;
             } else {
-                manage_not_complete(sensor);
+                manage_not_complete(sensor, interim);
             }
         }
     }
@@ -35,7 +35,7 @@ void find_east(oi_t* sensor) {
         set_cybot_coords(240, cybot_pose.xy.y);
 }
 
-int manage_not_complete(oi_t* sensor) {
+int manage_not_complete(oi_t* sensor, Coordinate interim_coord) {
     uint8_t hole = getHoleTouching(sensor);
     uint8_t target = getTargetTouching(sensor);
     // Set coordinates not accurate because don't know where it stops
@@ -44,7 +44,7 @@ int manage_not_complete(oi_t* sensor) {
         return 1;
     } else if (hole) {
         send_hole_point(sensor);
-        move_backwards(5);
+        move_backwards(sensor, 5, &cybot_pose);
     } else if (sensor->bumpRight | sensor->bumpLeft) {
         Field field;
         field.size = 1;
@@ -53,7 +53,7 @@ int manage_not_complete(oi_t* sensor) {
         pillar[0].radius = 7.0;
         field.pillars= pillar;
         send_field(field);
-        move_backwards(5);
+        move_backwards(sensor, 5, &cybot_pose);
     }
     return 0;
 }
@@ -80,7 +80,7 @@ bumpy receive_and_execute(oi_t* sensor) {
     char num_buffer[6];
     int buffer_loc = 0;
     while (true) {
-        routine_str = uart_receive();
+        char routine_str = uart_receive();
         if (routine_str == 'R' && !startRoutine) {
             startRoutine = 1;
         } else if (routine_str == 'R' && startRoutine) {
@@ -104,7 +104,7 @@ bumpy receive_and_execute(oi_t* sensor) {
         }
     }
     routine.amount = count;
-    return execute_routine(sensor, routine, cybot_pose);
+    return execute_routine(sensor, &routine, &cybot_pose);
 }
 // To be done when the edge is found
 void send_edge(char edge_type) {

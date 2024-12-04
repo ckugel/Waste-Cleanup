@@ -1,52 +1,38 @@
 
 
 #ifndef NAVIGATE_H_
-#define NAGIVATE_H_
+#define NAVIGATE_H_
 
 
 #include <stdio.h>
 #include <math.h>
 #include "filter.h"
 #include "open_interface.h"
+#include "movement.h"
 #include "uart.h"
 #include "Graph.h"
 #include "cliff.h"
 #include "scan.h"
 #include <ctype.h>
 
-Coordinate target_coords[16];
-target_coords[0].x = 5;
-target_coords[0].y = 5;
-target_coords[1].x = 240;
-target_coords[1].y = 422;
-target_coords[2].x = 5;
-target_coords[2].y = 422;
-target_coords[3].x = 240;
-target_coords[3].y = 5;
-target_coords[4].x = 5;
-target_coords[4].y = 141;
-target_coords[5].x = 240;
-target_coords[5].y = 282;
-target_coords[6].x = 5;
-target_coords[6].y = 422;
-target_coords[7].x = 240;
-target_coords[7].y = 422;
-target_coords[8].x = 5;
-target_coords[8].y = 282;
-target_coords[9].x = 240;
-target_coords[9].y = 141;
-target_coords[10].x = 5;
-target_coords[10].y = 5;
-target_coords[11].x = 5;
-target_coords[11].y = 422;
-target_coords[12].x = 120;
-target_coords[12].y = 5;
-target_coords[13].x = 240;
-target_coords[13].y = 422;
-target_coords[14].x = 240;
-target_coords[14].y = 5;
-target_coords[15].x = 5;
-target_coords[15].y = 5;
+Coordinate target_coords[16] = {
+    {5, 5},
+    {240, 422},
+    {5, 422},
+    {240, 5},
+    {5, 141},
+    {240, 282},
+    {5, 422},
+    {240, 422},
+    {5, 282},
+    {240, 141},
+    {5, 5},
+    {5, 422},
+    {120, 5},
+    {240, 422},
+    {240, 5},
+    {5, 5}
+};
 Pose2D cybot_pose;
 int north_found;
 
