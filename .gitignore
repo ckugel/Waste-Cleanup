@@ -51,7 +51,10 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+/.metadata/
+
 EmbeddedApp/.metadata/
 
 EmbeddedApp/.jxbrowser.userdata/
+EmbeddedApp/.ccls-cache/
 

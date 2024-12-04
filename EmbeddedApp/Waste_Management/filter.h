@@ -1,6 +1,8 @@
 /*
 * Filter.h
 *
+* This is the header file for a median filter
+*
 * Created on: Sep 17 2024
 * 	Author: ckugel05
 */
@@ -9,7 +11,7 @@
 #define FILTER_H
 
 
-#include "caleb_array.h"
+#include "circular_array.h"
 
 typedef struct {
   CArray data;
@@ -18,6 +20,7 @@ typedef struct {
 } MedianFilter;
 
 // create a new median filter
+// Warning this does dynamic memory allocation and must be freed with the deconstructor
 MedianFilter create_filter(uint8_t size);
 
 // log new data
@@ -32,8 +35,14 @@ T getMedian(MedianFilter* self);
 
 void deconstruct_filter(MedianFilter* self);
 
+/**
+ * Swap elements in the array 
+ */ 
 void swap_elements(T* array, char index1, char index2);
 
+/**
+ * returns the smaller of two floats
+ */ 
 float min(float one, float two);
 
 #endif /* FILTER_H */

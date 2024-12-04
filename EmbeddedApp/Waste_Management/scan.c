@@ -1,5 +1,7 @@
 #include "scan.h"
 
+// THIS IS NOT HERE TO BE USED IN FINAL CODE. THIS IS ONLY HERE TO SHOW OUR APPROACH THROUGHOUT LABS
+
 Field scan() {
     unsigned short angle;
 
