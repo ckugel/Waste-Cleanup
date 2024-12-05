@@ -35,7 +35,11 @@ int main(void)
     set_cybot_coords(120, 211);
     // cybot.pose.heading = ; //Needs to check the IMU
     find_east(sensor);
-    find_north(sensor);
+
+
+    if (!north_found) {
+        find_north(sensor);
+    }
     int coordinate_count = 0;
     Coordinate interim_coord;
     bumpy bump;
@@ -78,7 +82,7 @@ int main(void)
         } else {
             set_cybot_coords(interim_coord.x, interim_coord.y);
         }
-        if (abs(cybot_pose.xy.x - target_coords[coordinate_count].x) < 10 && (cybot_pose.xy.y - target_coords[coordinate_count].y) < 10) {
+        if (abs(cybot_pose.xy.x - target_coords[coordinate_count].x) < 10 && abs(cybot_pose.xy.y - target_coords[coordinate_count].y) < 10) {
             coordinate_count++;
         }
     }
