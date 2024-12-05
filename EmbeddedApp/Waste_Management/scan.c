@@ -17,7 +17,7 @@ Field scan() {
 
         // perform 3 measurements at each location
         // cyBOT_Scan(angle, &scan);
-        servo_move(angle);
+        servo_mode(angle);
         // float lerped = getReal(calculator, scan.IR_raw_val);
         // add_new_data_to_filter(&mFilter, (T) {angle, scan.IR_raw_val});
         // float lerped = (float) scan.IR_raw_val;
@@ -81,7 +81,7 @@ Field scan() {
         uint8_t scans;
         MedianFilter filter = create_filter(7);
         uint8_t angleNew = (detected[i].v1.angle + detected[i].v2.angle) / 2;
-        servo_move(angleNew);
+        servo_mode(angleNew);
         timer_waitMillis(250);
         for (scans = 0; scans < 7; scans++) {
             // cyBOT_Scan(angleNew, &scan);

@@ -1,19 +1,18 @@
 /*
- * adc.h
+ * acd.h
  *
- *  Created on: Oct 22, 2024
- *      Author: dwitty7
+ *  Created on: Oct 23, 2024
+ *      Author: ckugel05
  */
 
 #ifndef ADC_H_
 #define ADC_H_
 
-#include "Timer.h"
 #include <inc/tm4c123gh6pm.h>
+#include <stdint.h>
 
-void adc_init(void);
-
-int adc_read(void);
+void adc_init();
+int adc_read();
 
 
 #endif /* ADC_H_ */
