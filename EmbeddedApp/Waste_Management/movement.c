@@ -77,8 +77,10 @@ void move_backwards(oi_t *sensor, int centimeters, Pose2D* robotPose) {
     while (sum / 10 < centimeters) {
         oi_update(sensor);
         sum += sensor->distance;
-
-        if (sensor->bumpRight || sensor->bumpLeft) {
+        uint8_t hole = getHoleTouching(sensor);
+        uint8_t edge = getEdgeTouching(sensor);
+        uint8_t target = getTargetTouching(sensor);
+        if (target || edge || hole || sensor->bumpRight || sensor->bumpLeft) {
             translatePoseByMagnitude(robotPose, (sum / 10));
             // find the pillar position
             Pose2D hitPose = copy_of_pose(*robotPose);
@@ -89,7 +91,7 @@ void move_backwards(oi_t *sensor, int centimeters, Pose2D* robotPose) {
             Pillar hit = {.position = hitPose, .radius = SMALL_ITEM_RADIUS};
 
             // backup
-            move_backwards(sensor, BACKUP_HIT_LENGTH, robotPose);
+            // move_backwards(sensor, BACKUP_HIT_LENGTH, robotPose);
             return (bumpy) {.complete = false, .hitLeft = sensor->bumpLeft};
         }
     }

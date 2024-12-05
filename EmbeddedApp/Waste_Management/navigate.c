@@ -27,12 +27,13 @@ int manage_not_complete(oi_t* sensor, Coordinate interim_coord) {
 // To be done first
 // Will move the Cybot to the east side of the field
 void find_east(oi_t* sensor) {
+    // Turn the cybot so heading is facing east
     bumpy bump;
     Field field;
+    Coordinate interim;
     while (1) {
         field = scan();
         send_field(field);
-        Coordinate interim;
         interim.x = cybot_pose.xy.x + 50;
         interim.y = cybot_pose.xy.y;
         send_interim_coordinate(interim);
@@ -41,38 +42,80 @@ void find_east(oi_t* sensor) {
             uint8_t edge = getEdgeTouching(sensor);
             // Check if edge
             if (edge) {
-                // Check IMU for direction then send the edge
-
+                // Check IMU for direction
                 // If it's North or South need to continue with finding east
-                
-                // If it's east break
+                // Also should turn cybot perpendicular to edge or change the heading based on the IMU
+                north_found = 1;
+                send_edge('N')
+                // If it's east or west break
                 break;
             } else {
                 manage_not_complete(sensor, interim);
             }
+        } else {
+            set_cybot_coords(interim.x, interim.y);
         }
     }
     // If east was found
         set_cybot_coords(5, cybot_pose.xy.y);
+        interim.x = cybot_pose.xy.x + 50;
+        send_edge('E');
     // EDGE CASE: west was found
         set_cybot_coords(240, cybot_pose.xy.y);
+        interim.x = cybot_pose.xy.x - 50;
+        send_edge('W');
+    interim.y = cybot_pose.xy.y;
+    turn_clockwise(sensor, 180);
+    set_cybot_heading(cybot_pose.heading - 3.14);
+    // Move a little farther away from the edge
+    send_bot_pos();
+    field = scan();
+    send_field(field);
+    send_interim_coordinate(interim);
+    bump = receive_and_execute(sensor);
+    if (!bump.complete) {
+        manage_not_complete(sensor, interim);
+    } else {
+        set_cybot_coords(interim.x, interim.y);
+    }
 }
-
 
 // To be executed after finding the east side
 // Needs the Cybot to be turned 
 // Will move the Cybot to the north end of the field then send back that the position has been set
 void find_north() {
-    if (cybot_pose.heading != (3.14 / 2)) {
-       return;
+    // Turn the cybot so heading is facing east
+    bumpy bump;
+    Field field;
+    while (1) {
+        field = scan();
+        send_field(field);
+        Coordinate interim;
+        interim.x = cybot_pose.xy.x;
+        interim.y = cybot_pose.xy.y + 50;
+        send_interim_coordinate(interim);
+        bump = receive_and_execute(sensor);
+        if (!bump.complete) {
+            uint8_t edge = getEdgeTouching(sensor);
+            // Check if edge
+            if (edge) {
+                // Check IMU for direction
+                // If it's north or south break
+                break;
+            } else {
+                manage_not_complete(sensor, interim);
+            }
+        } else {
+            set_cybot_coords(interim.x, interim.y);
+        }
     }
-    int found = 0;
-    while (!found) {
-       Coordinate interim;
-       interim.x = cybot_pose.xy.x;
-       interim.y = cybot_pose.xy.y + 50;
-       send_interim_coordinate(interim);
-    }
+    // If north was found
+        set_cybot_coords(cybot_pose.xy.x, 5);
+        send_edge('N');
+    // EDGE CASE: south was found
+        set_cybot_coords(cybot_pose.xy.y, 420);
+        send_edge('S');
+        turn_to_angle(sensor, 270, &cybot_pose);
 }
 
 bumpy receive_and_execute(oi_t* sensor) {
