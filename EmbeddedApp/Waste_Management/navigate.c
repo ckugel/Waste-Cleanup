@@ -1,6 +1,29 @@
 
 #include "navigate.h"
 
+int manage_not_complete(oi_t* sensor, Coordinate interim_coord) {
+    uint8_t hole = getHoleTouching(sensor);
+    uint8_t target = getTargetTouching(sensor);
+    // Set coordinates not accurate because don't know where it stops
+    set_cybot_coords(((cybot_pose.xy.x + interim_coord.x) / 2) - 5, ((cybot_pose.xy.y + interim_coord.y) / 2) - 5);
+    if (target) {
+        return 1;
+    } else if (hole) {
+        send_hole_point(sensor);
+        move_backwards(sensor, 5, &cybot_pose);
+    } else if (sensor->bumpRight | sensor->bumpLeft) {
+        Field field;
+        field.size = 1;
+        Pillar pillar[1];
+        pillar[0].position = cybot_pose;
+        pillar[0].radius = 7.0;
+        field.pillars= pillar;
+        send_field(field);
+        move_backwards(sensor, 5, &cybot_pose);
+    }
+    return 0;
+}
+
 // To be done first
 // Will move the Cybot to the east side of the field
 void find_east(oi_t* sensor) {
@@ -35,28 +58,7 @@ void find_east(oi_t* sensor) {
         set_cybot_coords(240, cybot_pose.xy.y);
 }
 
-int manage_not_complete(oi_t* sensor, Coordinate interim_coord) {
-    uint8_t hole = getHoleTouching(sensor);
-    uint8_t target = getTargetTouching(sensor);
-    // Set coordinates not accurate because don't know where it stops
-    set_cybot_coords(((cybot_pose.xy.x + interim_coord.x) / 2) - 5, ((cybot_pose.xy.y + interim_coord.y) / 2) - 5);
-    if (target) {
-        return 1;
-    } else if (hole) {
-        send_hole_point(sensor);
-        move_backwards(sensor, 5, &cybot_pose);
-    } else if (sensor->bumpRight | sensor->bumpLeft) {
-        Field field;
-        field.size = 1;
-        Pillar pillar[1];
-        pillar[0].position = cybot_pose;
-        pillar[0].radius = 7.0;
-        field.pillars= pillar;
-        send_field(field);
-        move_backwards(sensor, 5, &cybot_pose);
-    }
-    return 0;
-}
+
 // To be executed after finding the east side
 // Needs the Cybot to be turned 
 // Will move the Cybot to the north end of the field then send back that the position has been set

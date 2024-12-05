@@ -38,7 +38,7 @@ int north_found;
 
 void find_east();
 bumpy receive_and_execute(oi_t*);
-void manage_not_complete(oi_t*, Coordinate);
+int manage_not_complete(oi_t*, Coordinate);
 void send_edge(char);
 void find_north();
 void set_cybot_coords(float, float);
@@ -50,3 +50,5 @@ void send_hole_point(oi_t*);
 void send_field(Field);
 bumpy execute_move(oi_t*, Move, Pose2D*);
 bumpy execute_routine(oi_t*, Routine*, Pose2D*);
+
+#endif // NAVIGATE_H_
