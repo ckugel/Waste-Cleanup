@@ -76,6 +76,7 @@ int main(void)
             } else {
                 result = manage_not_complete(sensor, interim_coord);
                 if (result) {
+                    uart_sendChar('x');
                     break;
                 }
             }
