@@ -31,6 +31,7 @@ void find_east(oi_t* sensor) {
     bumpy bump;
     Field field;
     Coordinate interim;
+    int result;
     while (1) {
         field = scan();
         send_field(field);
@@ -50,7 +51,11 @@ void find_east(oi_t* sensor) {
                 // If it's east or west break
                 break;
             } else {
-                manage_not_complete(sensor, interim);
+                result = manage_not_complete(sensor, interim);
+                if (result) {
+                    uart_sendChar('x');
+                    return;
+                }
             }
         } else {
             set_cybot_coords(interim.x, interim.y);
@@ -103,7 +108,11 @@ void find_north() {
                 // If it's north or south break
                 break;
             } else {
-                manage_not_complete(sensor, interim);
+                result = manage_not_complete(sensor, interim);
+                if (result) {
+                    uart_sendChar('x');
+                    return;
+                }
             }
         } else {
             set_cybot_coords(interim.x, interim.y);
