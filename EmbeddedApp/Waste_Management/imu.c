@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "bno055.h"
+#include "imu.h"
 #include "lcd.h"
 #include "uart.h"
 
