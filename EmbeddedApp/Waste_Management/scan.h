@@ -5,6 +5,9 @@
 #include "filter.h"
 #include "LinearInterp.h"
 #include "movement.h" 
+#include "servo.h"
+#include "adc.h"
+#include "ping.h"
 
 const uint16_t angles = 180;
 #define ANGLE_SIZE 180
