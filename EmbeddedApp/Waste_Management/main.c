@@ -23,16 +23,16 @@
 int main(void)
 {
 	// Start in a corner and go towards the target
-    timer_init();
-    lcd_init();
-    uart_init();
-    servo_init();
-    adc_init();
+    timer_init(); 	// Initialize timer for delays
+    lcd_init();		// Initialize LCD display	
+    uart_init();	// Initialize uart for communication
+    servo_init();	// Servo motor
+    adc_init();		// Initialize adc for sensor readings
     ping_interrupt_init();
-    oi_t *sensor = oi_alloc();
+    oi_t *sensor = oi_alloc();  	// Allocate memory for CyBot sensor data
     oi_init(sensor);
-    servo_mode(0);
-    set_cybot_coords(120, 211);
+    servo_mode(0);		// Set the servo to the initial position (0 degrees)
+    set_cybot_coords(120, 211);		// Set initial coordinates for the CyBot in the field
     // cybot.pose.heading = ; //Needs to check the IMU
     find_east(sensor);
 
@@ -40,6 +40,9 @@ int main(void)
     if (!north_found) {
         find_north(sensor);
     }
+
+    // Variables for navigation and field mapping	
+	
     int coordinate_count = 0;
     Coordinate interim_coord;
     bumpy bump;
@@ -62,31 +65,34 @@ int main(void)
 
     */
     while (1) {
-        send_bot_pos();
-        field = scan();
-        send_field(field);
-        interim_coord = get_interim_coordinate(cybot_pose.xy, target_coords[coordinate_count]);
+        send_bot_pos();		// Send Cybot's current position to the controller
+        field = scan();		// Scan surroundings
+        send_field(field);	// Send scanned field data
+        interim_coord = get_interim_coordinate(cybot_pose.xy, target_coords[coordinate_count]);		// Calculate coordinate
         send_interim_coordinate(interim_coord);
-        bump = receive_and_execute(sensor);
+        bump = receive_and_execute(sensor);		// Execute received movement instructions
+
+	    
         if (!bump.complete) {
             uint8_t edge = getEdgeTouching(sensor);
-            // Check if edge
+            // Check if the Cybot is touching a field edge
             if (edge) {
-                coordinate_count++;
+                coordinate_count++; // Move to next coordinate
             } else {
                 result = manage_not_complete(sensor, interim_coord);
                 if (result) {
-                    uart_sendChar('x');
+                    uart_sendChar('x');  // Notify the controller 
                     break;
                 }
             }
         } else {
+		// Update Cybot's position after a successful move
             set_cybot_coords(interim_coord.x, interim_coord.y);
         }
         if (abs(cybot_pose.xy.x - target_coords[coordinate_count].x) < 10 && abs(cybot_pose.xy.y - target_coords[coordinate_count].y) < 10) {
-            coordinate_count++;
+            coordinate_count++;  // Move to next target coordinate
         }
     }
-    oi_free(sensor);
+    oi_free(sensor);    // Free memory allocated for Cybot sensors
 	return 0;
 }
