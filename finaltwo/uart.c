@@ -4,6 +4,10 @@
 *
 *
 *
+*
+*
+*   @author
+*   @date
 */
 
 #include "uart.h"
@@ -11,8 +15,6 @@
 volatile short uart_event;
 volatile char uart_char;
 
-
-// Initialize the uart communication
 void uart_init(void){
 	//TODO
 

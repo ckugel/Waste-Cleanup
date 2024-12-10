@@ -1,9 +1,11 @@
 #include "scan.h"
 
+// THIS IS NOT HERE TO BE USED IN FINAL CODE. THIS IS ONLY HERE TO SHOW OUR APPROACH THROUGHOUT LABS
+
 Field scan() {
     unsigned short angle;
     undefined_dist = 0xFFFF;
-    STEP = 1;
+    STEP = 2;
     angles = 180;
 
     const uint8_t FILTER_SIZE = 9;
