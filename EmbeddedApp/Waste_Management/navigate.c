@@ -47,7 +47,7 @@ void find_east(oi_t* sensor) {
                 // If it's North or South need to continue with finding east
                 // Also should turn cybot perpendicular to edge or change the heading based on the IMU
                 north_found = 1;
-                send_edge('N')
+                send_edge('N');
                 // If it's east or west break
                 break;
             } else {
@@ -88,7 +88,7 @@ void find_east(oi_t* sensor) {
 // To be executed after finding the east side
 // Needs the Cybot to be turned 
 // Will move the Cybot to the north end of the field then send back that the position has been set
-void find_north() {
+void find_north(oi_t* sensor) {
     // Turn the cybot so heading is facing east
     bumpy bump;
     Field field;
@@ -108,6 +108,7 @@ void find_north() {
                 // If it's north or south break
                 break;
             } else {
+                int result;
                 result = manage_not_complete(sensor, interim);
                 if (result) {
                     uart_sendChar('x');
@@ -200,12 +201,12 @@ Coordinate get_interim_coordinate(Coordinate target_coord, Coordinate bot_pos) {
 // Sends the interim coordinates to the App
 void send_interim_coordinate(Coordinate interim_coord) {
     char buffer[50];
-    sprintf(buffer, " d %0.2f %0.2f %0.2f %0.2f ", interim_coord.x, interim_coord.y, cybot_pose.heading, 0);
+    sprintf(buffer, " d %0.2f %0.2f %0.2f ", interim_coord.x, interim_coord.y, cybot_pose.heading);
     uart_sendStr(buffer);
 }
 void send_bot_pos() {
     char buffer[50];
-    sprintf(buffer, " b o %0.2f %0.2f %0.2f %0.2f ", cybot_pose.xy.x, cybot_pose.xy.y, cybot_pose.heading, 0);
+    sprintf(buffer, " b o %0.2f %0.2f %0.2f ", cybot_pose.xy.x, cybot_pose.xy.y, cybot_pose.heading);
     uart_sendStr(buffer);
 }
 void send_hole_point(oi_t* sensor) {

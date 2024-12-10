@@ -22,6 +22,7 @@
 
 int main(void)
 {
+
 	// Start in a corner and go towards the target
     timer_init(); 	// Initialize timer for delays
     lcd_init();		// Initialize LCD display	
@@ -34,11 +35,30 @@ int main(void)
     servo_mode(0);		// Set the servo to the initial position (0 degrees)
     set_cybot_coords(120, 211);		// Set initial coordinates for the CyBot in the field
     // cybot.pose.heading = ; //Needs to check the IMU
-    find_east(sensor);
+
+    Coordinate target_coords[16] = {
+            {5, 5},
+            {240, 422},
+            {5, 422},
+            {240, 5},
+            {5, 141},
+            {240, 282},
+            {5, 422},
+            {240, 422},
+            {5, 282},
+            {240, 141},
+            {5, 5},
+            {5, 422},
+            {120, 5},
+            {240, 422},
+            {240, 5},
+            {5, 5}
+        };
+//    find_east(sensor);
 
 
     if (!north_found) {
-        find_north(sensor);
+//        find_north(sensor);
     }
 
     // Variables for navigation and field mapping	

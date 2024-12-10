@@ -296,11 +296,11 @@ void send_pillars_through_putty(Pillar* pillars, uint8_t size) {
      * @param pillars Array of Pillars to send.
      */
     uint8_t j;
-    uart_sendStr(" F");
+    // uart_sendStr(" F");
     for(j = 0; j < size; j++) {
         send_pillar_through_putty(pillars[j]);
     }
-    uart_sendChar('F ');
+    uart_sendStr("F ");
 
 }
 
@@ -390,6 +390,7 @@ float getAngleFromPose(Pose2D p) {
     return atan2(p.xy.y, p.xy.x);
 }
 
+
 // good luck
 float fast_inverse_square_root(float value) {
     float halfX = 0.5f * value;
@@ -446,6 +447,7 @@ bool intersects_pillar(Coordinate start, Coordinate end, Pillar* pillar) {
      */
     return line_intersects_circle(start.x, start.y, end.x, end.y, pillar->position.xy.x, pillar->position.xy.y, pillar->radius + BOT_RADIUS);
 }
+
 
 float getDistanceToPoseFrom(Pose2D to, Pose2D from) {
   return hypot(to.xy.x - from.xy.x, to.xy.y - from.xy.y);

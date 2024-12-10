@@ -4,6 +4,9 @@
 
 Field scan() {
     unsigned short angle;
+    undefined_dist = 0xFFFF;
+    STEP = 1;
+    angles = 180;
 
     const uint8_t FILTER_SIZE = 9;
 
