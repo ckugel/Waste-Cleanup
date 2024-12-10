@@ -154,11 +154,11 @@ void send_pillar_through_putty(Pillar pillar){
 
 void send_pillars_through_putty(Pillar* pillars, uint8_t size) {
     uint8_t j;
-    uart_sendStr(" F");
+    // uart_sendStr(" F");
     for(j = 0; j < size; j++) {
         send_pillar_through_putty(pillars[j]);
     }
-    uart_sendChar('F ');
+    uart_sendStr("F ");
 
 }
 
@@ -225,48 +225,6 @@ float getDistanceToPose(Pose2D p) {
 
 float getAngleFromPose(Pose2D p) {
     return atan2(p.xy.y, p.xy.x);
-}
-
-// good luck
-float fast_inverse_square_root(float value) {
-    float halfX = 0.5f * value;
-    int i = *(int*)&value;
-    i = 0x5f3759df - (i >> 1); 
-    value = *(float*)&i;
-    return value*(1.5f - halfX*value*value);
-}
-
-float inverse_length_raw(float x1, float y1, float x2, float y2) {
-   return fast_inverse_square_root(pow(x1 - x2, 2) + pow(y1 - y2, 2));
-}
-
-float inverse_length(Coordinate one, Coordinate two) {
-   return fast_inverse_square_root(pow(one.x - two.x, 2) + pow(one.y - two.y, 2));
-}
-
-bool line_intersects_circle(float x1, float y1, float x2, float y2, float cx, float cy, float radius) {
-    float inverseLength = inverse_length_raw(x1, y1, x2, y2);
-    float dy = (y2 - y1) * inverseLength;
-    float dx = (x2 - x1) * inverseLength;
-
-    float t = dx * (cx - x1) + dy * (cy - y1);
-
-    float Ex = t * dx + x1;
-    float Ey = t * dy + y1;
-
-    // technically we should calculate the euclidean distance between E and the center of the circle
-
-    // however all we would do with that is compare if it is less than the radius of the circle
-    // Because sqrt is a monotonic function (order is perserved) we can compare L with the square of R
-    // the square of R is much faster to calculate here
-    float L = pow(Ex - cx, 2) + pow(Ey - cy, 2);
-
-    return L < pow(radius, 2);
-
-}
-
-bool intersects_pillar(Coordinate start, Coordinate end, Pillar* pillar) {
-    return line_intersects_circle(start.x, start.y, end.x, end.y, pillar->position.xy.x, pillar->position.xy.y, pillar->radius + BOT_RADIUS);
 }
 
 float getDistanceToPoseFrom(Pose2D to, Pose2D from) {

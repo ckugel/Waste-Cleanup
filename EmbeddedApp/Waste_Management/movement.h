@@ -11,6 +11,7 @@
 #include "open_interface.h"
 #include "uart.h"
 #include "Graph.h"
+#include "cliff.h"
 
 #define BACKUP_HIT_LENGTH 20
 

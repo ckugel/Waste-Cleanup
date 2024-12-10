@@ -9,10 +9,11 @@
 #include "adc.h"
 #include "ping.h"
 
-const uint16_t angles = 180;
+
 #define ANGLE_SIZE 180
-const uint8_t STEP = 1;
-const uint16_t undefined_dist = 0xFFFF;
+uint16_t angles;
+uint8_t STEP;
+uint16_t undefined_dist;
 
 Field scan();
 

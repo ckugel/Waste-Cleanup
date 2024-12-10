@@ -272,7 +272,7 @@ void bno_calibrateInteractive()
     char bno_str[120];
     bno_calib_t *bno_c = malloc(sizeof(bno_calib_t));
     uart_sendStr("Press any key to continue...\r\n");
-    uart_waitForByte();
+    uart_receive();
     bno_readCalibration(bno_c);
     uart_sendStr("Current Calibration Data:\r\n");
     sprintf(bno_str,
