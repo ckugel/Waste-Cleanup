@@ -1,5 +1,7 @@
 #include "scan.h"
 
+
+// Scans the field and returns a Field object with pillars
 Field scan() {
     unsigned short angle;
     undefined_dist = 0xFFFF;
