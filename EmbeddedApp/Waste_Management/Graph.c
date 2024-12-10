@@ -4,20 +4,56 @@
 
 #include "Graph.h"
 
+/**
+ * Creates a Pose2D structure from a coordinate and heading angle.
+ * 
+ *  coords => Coordinate (x, y).
+ *  heading => Heading angle in radians.
+ *  returns the constructed Pose2D structure.
+ */
 Pose2D create_pose_from_coordinates(Coordinate coords, float heading) {
     return (Pose2D) {.xy = coords, .heading = heading};
 }
 
+/**
+ * Creates a Pose2D structure from x, y values and a heading angle.
+ * 
+ *  x is X-coordinate.
+ *  y is Y-coordinate.
+ */
+
 Pose2D create_pose_from_xy(float x, float y, float heading) {
     return (Pose2D) {.xy = {.x = x, .y = y}, .heading = heading};
 }
+
+/**
+ * Creates a copy of a Pose2D structure.
+ * 
+ * pose is The original Pose2D.
+ * returns The copied Pose2D.
+ */
 Pose2D copy_of_pose(Pose2D pose) {
     return (Pose2D) {.xy = pose.xy, .heading = pose.heading};
 }
 
+/**
+ *  Creates a Pose2D using polar coordinates.
+ * 
+ *  "magnitude" is Distance from the origin.
+ *  "angle" is Angle in radians.
+ *  returns The constructed Pose2D.
+ */
 Pose2D create_pose_from_polar(float magnitude, float angle) {
   return (Pose2D) {.xy.x = magnitude * cos(angle), .xy.y = magnitude * sin(angle), .heading = 0};
 }
+
+/**
+ * Creates a Field structure from an array of Pillars.
+ * 
+ * "pillars" is Array of Pillars.
+ * "size" is Number of Pillars.
+ * returns The constructed Field.
+ */
 
 Field create_field(Pillar* pillars, uint8_t size) {
     Field f;
@@ -27,30 +63,59 @@ Field create_field(Pillar* pillars, uint8_t size) {
     return f;
 }
 
+/**
+ *  Adds a Pillar to a Field. * 
+ * "field" is Pointer to the Field structure.
+ * @param p The Pillar to add.
+ */
+
 void add_bump_to_field(Field* field, Pillar p) {
     field->pillars[field->size++] = p; // store it into the field object with guranteed space (maybe)
 }
+
+/**
+ * Calculates the angle between two coordinates.
+ * 
+ * @param one First Coordinate.
+ * @param two Second Coordinate.
+ * @return float Angle in radians.
+ */
 
 float angleBetweenTwoPoints(Coordinate one, Coordinate two) {
     return atan2((two.y - one.y), (two.x - one.x));
 }
 
+/**
+ * Calculates the distance between two coordinates.
+ * @return float Distance between the points.
+ */
+
 float distanceBetweenTwoPoints(Coordinate one, Coordinate two) {
     return hypot(one.x - two.x, one.y - two.y);
 }
+
+/**
+ * Free memory allocated for a Field's Pillars.
+ * 
+ * @param field Pointer to the Field structure.
+ */
 
 void deconstruct_field(Field* field) {
     free(field->pillars);
 }
 
+// Convert degrees to radians.
 float degrees_to_radians(float degrees) {
     return degrees * M_PI / 180.0;
 }
 
+// Convert radians to degrees
 float radians_to_degrees(float radians) {
     return radians * 180.0 / M_PI;
 }
 
+
+// Rotate a Pose2D by a given angle.
 void rotatePoseByAngle(Pose2D* pose, float angle) {
     double newX = (pose->xy.x * cos(angle)) - (pose->xy.y * sin(angle));
     pose->xy.y = (pose->xy.x * sin(angle)) + (pose->xy.y * cos(angle));
@@ -58,23 +123,46 @@ void rotatePoseByAngle(Pose2D* pose, float angle) {
     pose->heading += angle;
 }
 
+// Rotate a Pose2D by another Pose2D's heading angle.
+// "rotation" is The Pose2D providing the rotation angle.
 void rotatePoseByPose(Pose2D* pose, Pose2D rotation) {
     rotatePoseByAngle(pose, rotation.heading);
 }
 
+
+/**
+ * Translates a Pose2D by a given coordinate.
+ * 
+ * @param base Pointer to the Pose2D to translate.
+ * @param translation The Coordinate by which to translate.
+ */
 void translatePoseByCoordinate(Pose2D* base, Coordinate translation) {
     base->xy.x += translation.x;
     base->xy.y += translation.y;
 }
 
+
+/**
+ * Translates a Pose2D by another Pose2D.
+ * 
+ * @param base Pointer to the Pose2D to translate.
+ * @param translation The Pose2D providing the translation.
+ */
 void translatePoseByPose(Pose2D* base, Pose2D translation) {
     translatePoseByCoordinate(base, translation.xy);
 }
 
+/**
+ * Applies a transformation (rotation and translation) to a Pose2D.
+ * 
+ * @param base Pointer to the base Pose2D.
+ * @param modifier The Pose2D providing the transformation.
+ */
 void transformPose(Pose2D* base, Pose2D modifier) {
     rotatePoseByPose(base, modifier);
     translatePoseByPose(base, modifier);
 }
+
 
 void transformFieldBy(Field* field, Pose2D pose) {
     uint8_t i;
@@ -83,11 +171,28 @@ void transformFieldBy(Field* field, Pose2D pose) {
     }
 }
 
+/**
+ * Translates a Pose2D along its heading by a given magnitude.
+ * 
+ * @param base Pointer to the Pose2D.
+ * @param magnitude Distance to translate.
+ */
+
 void translatePoseByMagnitude(Pose2D* base, float magnitude) {
      base->xy.x += cos(base->heading) * magnitude;
      base->xy.y += sin(base->heading) * magnitude;
 }
 
+
+    /**
+     * @brief Converts an Obj (detected object) to a Pillar.
+     *
+     * The pillar is created based on the average angle and distance of the object.
+     * The linear width of the pillar is calculated using trigonometric functions.
+     *
+     * @param object Detected object containing angular and distance information.
+     * @return Pillar The constructed Pillar.
+     */
 Pillar getPillarFromObject(Obj object) {
     float averageAngle = degrees_to_radians(fabs(object.v2.angle + object.v1.angle)) / 2.0 - degrees_to_radians(90);
     float angularWidth = degrees_to_radians(fabs(object.v2.angle - object.v1.angle));
@@ -106,6 +211,13 @@ Pillar getPillarFromObject(Obj object) {
     };
 }
 
+    /**
+     * Finds the smallest object (based on linear width) from a list of objects.
+     *
+     * @param objects Array of objects to evaluate.
+     * @param size Number of objects in the array.
+     * @return Obj The smallest object.
+     */
 Obj getSmallestObject(Obj* objects, uint8_t size) {
     uint8_t i;
     uint8_t indexOfSmallestLinearWidth;
@@ -125,6 +237,12 @@ Obj getSmallestObject(Obj* objects, uint8_t size) {
 }
 
 Pillar* getPillarsFromObject(Obj* objects, uint8_t size) {
+     /**
+     * Converts an array of objects into an array of Pillars.
+     *
+     * Each object is converted to a Pillar using `getPillarFromObject`.
+     * @return Pillar* Pointer to the array of Pillars.
+     */
     uint8_t i;
     Pillar* pillars = calloc(sizeof(Pillar), size);
     for (i = 0; i < size; i++) {
@@ -134,18 +252,35 @@ Pillar* getPillarsFromObject(Obj* objects, uint8_t size) {
 }
 
 void send_bot_pose_through_putty(Pillar position) {
+    /**
+     * Sends the bot's position through UART (via PuTTY).
+     *
+     * Formats the position and radius as a string and transmits it.
+     *
+     * @param position Current position of the bot.
+     */    
      char buffer[50];
     sprintf(buffer, " b %0.2f %0.2f %0.2f %0.2f ", position.position.xy.x, position.position.xy.y, position.position.heading, position.radius);
     uart_sendStr(buffer);
 }
 
 void send_desired_through_putty(uint8_t indexSmallest) {
+    /**
+     * Sends the index of the smallest object as the desired target via UART.
+     *
+     * @param indexSmallest Index of the smallest object.
+     */
      char buffer[50];
     sprintf(buffer, " d %d ", indexSmallest);
     uart_sendStr(buffer);
 }
 
 void send_pillar_through_putty(Pillar pillar){
+    /**
+     * Sends information about a single Pillar through UART.
+     *
+     * "pillar" is The Pillar to send.
+     */    
     char buffer[50];
     sprintf(buffer, " o %0.2f %0.2f %0.2f %0.2f ", pillar.position.xy.x, pillar.position.xy.y, pillar.position.heading, pillar.radius);
     uart_sendStr(buffer);
@@ -153,6 +288,13 @@ void send_pillar_through_putty(Pillar pillar){
 }
 
 void send_pillars_through_putty(Pillar* pillars, uint8_t size) {
+     /**
+     * Sends an array of Pillars through UART.
+     *
+     * Starts with an identifier ('F') and ends with 'F '.
+     *
+     * @param pillars Array of Pillars to send.
+     */
     uint8_t j;
     uart_sendStr(" F");
     for(j = 0; j < size; j++) {
@@ -163,6 +305,13 @@ void send_pillars_through_putty(Pillar* pillars, uint8_t size) {
 }
 
 Pillar get_smallest_pillar(Pillar* pillars, uint8_t size) {
+     /**
+     *  Finds the smallest Pillar (based on radius) from an array of Pillars.
+     *
+     * @param pillars Array of Pillars to evaluate.
+     * @param size Number of Pillars in the array.
+     * @return Pillar The smallest Pillar.
+     */
     uint8_t indexSmallest;
     indexSmallest = 0xFF;
     uint8_t i;
@@ -177,6 +326,12 @@ Pillar get_smallest_pillar(Pillar* pillars, uint8_t size) {
 }
 
 uint8_t get_index_smallest_pillar(Field* field) {
+     /**
+     * Finds the index of the smallest Pillar in a Field.
+     *
+     * @param field Pointer to the Field structure.
+     * @return uint8_t Index of the smallest Pillar.
+     */
     uint8_t indexSmallest;
     indexSmallest = 0xFF;
     uint8_t i;
@@ -200,11 +355,19 @@ void send_objects_through_putty(Obj* objects, uint8_t size) {
 }
 
 void send_object_raw(Obj object) {
+     /**
+     * Sends raw information about objects via UART.
+     *
+     * Loops through each object and transmits its data.
+     *
+     * @param object Array of objects to send.
+     */
     char buffer[60];
     sprintf(buffer, "angle 1: %d angle 2: %d distance: %.2f\r\n", object.v1.angle, object.v2.angle, object.middleDistance);
     uart_sendStr(buffer);
 }
 
+// Swap objects
 void swapObjects(Obj* objects, uint16_t one, uint16_t two) {
     Obj temp = objects[one];
     objects[one] = objects[two];
@@ -241,6 +404,12 @@ float inverse_length_raw(float x1, float y1, float x2, float y2) {
 }
 
 float inverse_length(Coordinate one, Coordinate two) {
+     /**
+     * Calculates the inverse length between two coordinates.
+     *
+     * Uses a fast inverse square root for efficiency.
+     * @return float The inverse length.
+     */
    return fast_inverse_square_root(pow(one.x - two.x, 2) + pow(one.y - two.y, 2));
 }
 
@@ -266,6 +435,15 @@ bool line_intersects_circle(float x1, float y1, float x2, float y2, float cx, fl
 }
 
 bool intersects_pillar(Coordinate start, Coordinate end, Pillar* pillar) {
+     /**
+     * Checks if a line segment intersects a pillar.
+     *
+     * Uses geometric calculations to determine intersection.
+     *
+     * @param start Starting coordinate of the line.
+     * @param end Ending coordinate of the line.
+     * @return bool True if the line intersects the pillar, false otherwise.
+     */
     return line_intersects_circle(start.x, start.y, end.x, end.y, pillar->position.xy.x, pillar->position.xy.y, pillar->radius + BOT_RADIUS);
 }
 
